@@ -34,12 +34,14 @@ class AlumnoModel(models.Model):
     id_alumno=models.AutoField(primary_key=True)
     nombres=models.CharField(max_length=50)
     apellidos=models.CharField(max_length=50)
+    direccion = models.CharField(max_length=150,null=True)
     dni=models.CharField(max_length=8)
     TIPO_ALUMNO=(
         ('REGULAR','REGULAR'),
         ('LIBRE','LIBRE'),
     )
     id_grado=models.ForeignKey('GradosModel',on_delete=models.CASCADE,db_column='id_grado',related_name='alumno')
+    id_padre = models.ForeignKey('PadreApoderadoModel',on_delete=models.CASCADE,db_column='id_padre',related_name='padre_apoderado')
     tipo_alumno=models.CharField(max_length=15,choices=TIPO_ALUMNO)
     fecha_nac=models.DateField()
     create_en=models.DateTimeField(auto_now_add=True)
@@ -99,6 +101,8 @@ class  PadreApoderadoModel(models.Model):
     dni=models.CharField(max_length=8)
     telefono=models.CharField(max_length=9)
     email=models.EmailField()
+    GENDER = (('FEMENINO','FEMENINO'),('MASCULINO','MASCULINO'))
+    genero=models.CharField(max_length=10,choices=GENDER)
     direccion=models.CharField(max_length=100)
     create_en=models.DateTimeField(auto_now_add=True)
     update_en=models.DateTimeField(auto_now=True)

@@ -102,9 +102,9 @@ class AuthLoginView(TokenObtainPairView):
     def post(self, request):
         try:
             return super().post(request)
-        except ValidationError as e:
+        except ValidationError:
             return Response({
                 'object': 'login_user',
-                'error': 'Invalid credentials'
-            }, status=status.HTTP_400_BAD_REQUEST)
+                'error': 'Credenciales malas'
+            })
 

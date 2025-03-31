@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import ServiciosModel, DocenteModel,GradosModel,AlumnoModel
+from .models import ServiciosModel, DocenteModel,GradosModel,AlumnoModel,PadreApoderadoModel
 
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,3 +20,8 @@ class AlumnoSerializer(serializers.ModelSerializer):
     class Meta:
         model = AlumnoModel
         fields = '__all__'
+
+class PadreApoderadoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= PadreApoderadoModel
+        fields='__all__'

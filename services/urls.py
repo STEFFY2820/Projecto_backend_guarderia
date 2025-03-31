@@ -22,5 +22,5 @@ urlpatterns = [
     path('alumnos/destroy/<int:pk>', AlumnoDestroyView.as_view()),
     path('alumnos/retrieve/<int:pk>', AlumnoRetrieveView.as_view()),
     path('alumnos/grado/<int:id_grado>', AlumnoPorGradoListView.as_view()),
-
+    path('padreapoderado',PadreApoderadoCreateView.as_view())
 ]

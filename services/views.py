@@ -1,9 +1,11 @@
 from rest_framework import generics
 from rest_framework.response import Response
 from .models import ServiciosModel, DocenteModel, GradosModel,AlumnoModel
-from .serializers import ServiceSerializer, DocenteSerializer, GradosSerializer,AlumnoSerializer
+from .serializers import ServiceSerializer, DocenteSerializer, GradosSerializer,AlumnoSerializer,PadreApoderadoSerializer
 from django.http import Http404
 from rest_framework import status
+from django.db import transaction
+from authentication.permissions import (IsAuthenticated,IsAdmin,IsUser)
 
 class ServicesListView(generics.ListCreateAPIView):
     queryset = ServiciosModel.objects.all()
@@ -20,6 +22,7 @@ class ServicesCreateView(generics.CreateAPIView):
     serializer_class = ServiceSerializer
 
     def create(self,request, *args, **kwargs):
+        #with transaction.atomic():
         response = super().create(request, *args, **kwargs)
         return Response({
             'object': 'create_service',
@@ -81,6 +84,7 @@ class ServiceRetrieveView(generics.RetrieveAPIView):
 class DocenteListView(generics.ListCreateAPIView):
     queryset = DocenteModel.objects.all()
     serializer_class = DocenteSerializer
+    permission_classes = [IsAuthenticated]
 
     def list(self,request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
@@ -312,3 +316,13 @@ class AlumnoRetrieveView(generics.RetrieveAPIView):
                 'object': 'retrieve_alumno',
                 'data': 'Alumno no encontrado'
             }, status=status.HTTP_400_BAD_REQUEST)
+        
+class PadreApoderadoCreateView(generics.CreateAPIView):
+    serializer_class = PadreApoderadoSerializer
+
+    def create(self,request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        return Response({
+            'object': 'create_grado',
+            'data': response.data
+        }, status=status.HTTP_200_OK)

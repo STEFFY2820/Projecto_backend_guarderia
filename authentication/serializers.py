@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from .models import *
 from django.contrib.auth import authenticate
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 
 class RoleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -29,8 +31,9 @@ class UserSerializer(serializers.ModelSerializer):
             instance.name = self.validated_data.get('name', instance.name)
             instance.role = self.validated_data.get('role', instance.role)
 
-            if 'password' in self.validated_data:
-                instance.set_password(self.validated_data['password'])
+            if 'password' in validated_data:
+                instance.set_password(validated_data.get('password'))
+            
             instance.save()
             return instance
         else:
@@ -38,14 +41,23 @@ class UserSerializer(serializers.ModelSerializer):
             user.set_password(validated_data['password'])
             user.save()
 
-class LoginSerializer(serializers.Serializer):
+class LoginSerializer(TokenObtainPairSerializer):
+    username_field='email'
+
     def validate(self, attrs):
         authenticate_kwargs = {
             self.username_field: attrs[self.username_field],
-            'password': attrs['password']
+            "password": attrs["password"]
         }
 
+        print("Intentando autenticar con:", authenticate_kwargs) 
+
         user=authenticate(**authenticate_kwargs)
+
+        if user:
+            print("Usuario autenticado correctamente:", user.email)
+        else:
+            print("Error en la autenticacion")
 
         if user and user.status:
             return super().validate(attrs)
@@ -53,7 +65,7 @@ class LoginSerializer(serializers.Serializer):
         raise serializers.ValidationError('Invalid credentials')
 
     @classmethod  
-    def get_token(self,user):
+    def get_token(cls,user):
         token = super().get_token(user)
         token['name'] = user.name
         token['email'] = user.email

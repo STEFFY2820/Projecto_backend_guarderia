@@ -14,10 +14,14 @@ class MatriculaModel(models.Model):
         ('RETIRED','RETIRED'),
     )
 
-    estado=models.CharField(max_length=10,choices=STATUS)
+    estado=models.CharField(max_length=10,choices=STATUS,default='ACTIVATE')
     observacion=models.CharField(max_length=100)
     created_at=models.DateTimeField(auto_now_add=True)
     updated_at=models.DateTimeField(auto_now=True)
+    user=models.ForeignKey('authentication.UserModel',on_delete=models.CASCADE,db_column='user',related_name='matricula'  ,  null=True,  # Allow null values temporarily
+    blank=True)
+
+
 
     class Meta:
         db_table = 'matricula'
